@@ -4,3 +4,15 @@ See gps.h for usage.
 
 Check LICENSE for licensing info.
 
+Python bindings are used like:
+
+import py_kalman
+filter = py_kalman.filter(<noise double>)
+filter.update_velocity2d(<lat>, <lon>, <seconds_since_last_update>)
+filter.get_mph()
+filter.get_lat_long()
+filter.get_velocity()
+filter.get_bearing()
+
+Installation should be as simple as:
+python setup.py install
