@@ -1,39 +1,44 @@
 
 #include <Python.h>
-#include <gps.h>
+#include "gps.h"
+#include "matrix.h"
 
 typedef struct{
     PyObject_HEAD
-    KalmanFilter *filter;
+    KalmanFilter filter;
     double noise;
 } PyKalmanFilter;
 
-static void py_filter_init(PyKalmanFilter *self, PyObject *args){
+static int py_filter_init(PyKalmanFilter *self, PyObject *args){
 
     double noise;
-    if (!PyArg_ParseTuple(args, "d", &size))
-        return NULL;
-    self->noise = noise
+    if (!PyArg_ParseTuple(args, "d", &noise)){
+        return 1;
+    }
+    self->noise = noise;
     self->filter = alloc_filter_velocity2d(noise);
-    if (!self->filter)
-        return NULL;
+    return 0;
 }
 
-static void py_free_filter(PyKalmanFilter *self){
+static void py_free_filter(PyKalmanFilter *self, PyObject *args) {
     free_filter(self->filter);
 }
 
-static void py_update_velocity2d(PyKalmanFilter *self, PyObject *args) {
-
-    double lat, lon, seconds_since_last_update
+static PyObject *py_update_velocity2d(PyKalmanFilter *self, PyObject *args) {
+    double lat, lon, seconds_since_last_update;
+    
     if (!PyArg_ParseTuple(args, "ddd", &lat, &lon, &seconds_since_last_update))
         return NULL;
-    update_velocity2d(self, lat, lon, seconds_since_last_update);
+        
+    update_velocity2d(self->filter, lat, lon, seconds_since_last_update);
+
+    Py_INCREF(Py_None);
+    return Py_None;
 }
 
 static PyObject *py_get_lat_long(PyKalmanFilter *self, PyObject *args){
 
-    double lat, lon
+    double lat, lon;
     get_lat_long(self->filter, &lat, &lon);
     PyObject *result = Py_BuildValue("dd", lat, lon);
 
@@ -44,7 +49,7 @@ static PyObject *py_get_lat_long(PyKalmanFilter *self, PyObject *args){
    Kalman filter. */
 static PyObject *py_get_velocity(PyKalmanFilter *self, PyObject *args){
 
-    double delta_lat, delta_lon
+    double delta_lat, delta_lon;
     get_velocity(self->filter, &delta_lat, &delta_lon);
     PyObject *result = Py_BuildValue("dd", delta_lat, delta_lon);
 
@@ -66,18 +71,14 @@ static PyObject *py_get_bearing(PyKalmanFilter *self, PyObject *args){
 static PyObject *py_get_mph(PyKalmanFilter *self, PyObject *args){
 
     double mph;
-    bearing = get_mph(self->filter);
+    mph = get_mph(self->filter);
     PyObject *result = Py_BuildValue("d", mph);
 
     return result;
 }
 
-static PyMethodDef module_methods[] = {
-    {NULL}
-};
-
 static PyMethodDef filter_methods[] = {
-    { "update_velocity2d", (PyCFunction)py_update_velocity2d, METH_VARARGS, "" },
+    { "update_velocity2d", (PyCFunction)py_update_velocity2d, METH_VARARGS, ""},
     { "get_lat_long", (PyCFunction)py_get_lat_long, METH_NOARGS, ""},
     { "get_velocity", (PyCFunction)py_get_velocity, METH_NOARGS, ""},
     { "get_bearing", (PyCFunction)py_get_bearing, METH_NOARGS, ""},
@@ -130,19 +131,14 @@ static PyTypeObject filterType={
 #ifndef PyMODINIT_FUNC
 #define PyMODINIT_FUNC void
 #endif
-PyMODINIT_FUNC initpy_filter(void) {
+PyMODINIT_FUNC initpy_kalman(void) {
     PyObject *m;
     if (PyType_Ready(&filterType) < 0)
         return;
 
-    m = Py_InitModule3("iKalman", module_methods, "Python bindings for Kalman Filter");
+    m = Py_InitModule3("py_kalman", NULL, "");
     if (m == NULL)
         return;
-
-    PyKalmanError = PyErr_NewException("iKalman.error", NULL, NULL);
-
-    Py_INCREF(PyKalmanError);
-    PyModule_AddObject(m, "error", PyFFmpegError);
 
     Py_INCREF(&filterType);
     PyModule_AddObject(m, "filter", (PyObject *)&filterType);
