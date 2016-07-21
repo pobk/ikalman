@@ -9,9 +9,10 @@ setup(
                                         "./kalman.c",
                                         "./matrix.c"],
                                extra_compile_args=['-std=c99'])],
-        version="0.1.3",
+        version="0.1.4",
         author="Joshua Semar",
         author_email="joshua.semar@mapmyfitness.com",
+        download_url='https://github.com/ruipgil/ikalman/archive/master.zip',
         url="https://github.com/ruipgil/ikalman",
         description = 'Python bindings for the ikalman c library'
       )
