@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "matrix.h"
+#include "./matrix.h"
 
 /* This could be reduced to a single malloc if it mattered. */
 Matrix alloc_matrix(int rows, int cols) {
@@ -34,13 +34,13 @@ void free_matrix(Matrix m) {
 void set_matrix(Matrix m, ...) {
   va_list ap;
   va_start(ap, m);
-  
+
   for (int i = 0; i < m.rows; ++i) {
     for (int j = 0; j < m.cols; ++j) {
       m.data[i][j] = va_arg(ap, double);
     }
   }
-  
+
   va_end(ap);
 }
 
@@ -212,7 +212,7 @@ void shear_row(Matrix m, int r1, int r2, double scalar) {
    Simultaneously, we apply the same elementary row operations to a
    separate identity matrix to produce the inverse matrix.
    If this makes no sense, read wikipedia on Gauss-Jordan elimination.
-   
+
    This is not the fastest way to invert matrices, so this is quite
    possibly the bottleneck. */
 int destructive_invert_matrix(Matrix input, Matrix output) {
@@ -259,6 +259,6 @@ int destructive_invert_matrix(Matrix input, Matrix output) {
       shear_row(output, j, i, shear_needed);
     }
   }
-  
+
   return 1;
 }

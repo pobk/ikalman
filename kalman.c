@@ -1,6 +1,6 @@
 /* Kalman filters. */
 
-#include "kalman.h"
+#include "./kalman.h"
 
 KalmanFilter alloc_filter(int state_dimension,
 			  int observation_dimension) {
@@ -40,11 +40,11 @@ KalmanFilter alloc_filter(int state_dimension,
 					observation_dimension);
   f.big_square_scratch = alloc_matrix(state_dimension,
 				      state_dimension);
-  
+
   return f;
 }
 
-void free_filter(KalmanFilter f) { 
+void free_filter(KalmanFilter f) {
   free_matrix(f.state_transition);
   free_matrix(f.observation_model);
   free_matrix(f.process_noise_covariance);
@@ -108,7 +108,7 @@ void estimate(KalmanFilter f) {
      TODO: handle inversion failure intelligently. */
   destructive_invert_matrix(f.innovation_covariance,
 			    f.inverse_innovation_covariance);
-  
+
   /* Calculate the optimal Kalman gain.
      Note we still have a useful partial product in vertical scratch
      from the innovation covariance. */

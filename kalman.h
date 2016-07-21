@@ -1,7 +1,7 @@
 #ifndef __KALMAN_H__
 #define __KALMAN_H__
 
-#include "matrix.h"
+#include "./matrix.h"
 
 /* Refer to http://en.wikipedia.org/wiki/Kalman_filter for
    mathematical details. The naming scheme is that variables get names
@@ -19,7 +19,7 @@ typedef struct {
 
   /* These parameters define the size of the matrices. */
   int state_dimension, observation_dimension;
-  
+
   /* This group of matrices must be specified by the user. */
   /* F_k */
   Matrix state_transition;
@@ -33,7 +33,7 @@ typedef struct {
   /* The observation is modified by the user before every time step. */
   /* z_k */
   Matrix observation;
-  
+
   /* This group of matrices are updated every time step by the filter. */
   /* x-hat_k|k-1 */
   Matrix predicted_state;
@@ -56,7 +56,7 @@ typedef struct {
   Matrix vertical_scratch;
   Matrix small_square_scratch;
   Matrix big_square_scratch;
-  
+
 } KalmanFilter;
 
 KalmanFilter alloc_filter(int state_dimension,

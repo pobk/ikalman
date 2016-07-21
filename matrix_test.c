@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "matrix.h"
+#include "./matrix.h"
 
 void test_copy() {
   /* Put some data in foo, then copy it to bar */

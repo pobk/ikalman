@@ -13,7 +13,7 @@
 #define __GPS_H__
 
 #include <stdio.h>
-#include "kalman.h"
+#include "./kalman.h"
 
 /* Create a GPS filter that only tracks two dimensions of position and
    velocity.

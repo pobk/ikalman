@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "kalman.h"
+#include "./kalman.h"
 
 /* Test the example of a train moving along a 1-d track */
 void test_train() {
@@ -17,13 +17,13 @@ void test_train() {
   /* The covariance matrices are blind guesses */
   set_identity_matrix(f.process_noise_covariance);
   set_identity_matrix(f.observation_noise_covariance);
-  
+
   /* Our knowledge of the start position is incorrect and unconfident */
   double deviation = 1000.0;
   set_matrix(f.state_estimate, 10 * deviation);
   set_identity_matrix(f.estimate_covariance);
   scale_matrix(f.estimate_covariance, deviation * deviation);
-  
+
   /* Test with time steps of the position gradually increasing */
   for (int i = 0; i < 10; ++i) {
     set_matrix(f.observation, (double) i);
@@ -33,7 +33,7 @@ void test_train() {
   /* Our prediction should be close to (10, 1) */
   printf("estimated position: %f\n", f.state_estimate.data[0][0]);
   printf("estimated velocity: %f\n", f.state_estimate.data[1][0]);
-  
+
   free_filter(f);
 }
 

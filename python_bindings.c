@@ -1,7 +1,7 @@
 
 #include <Python.h>
-#include "gps.h"
-#include "matrix.h"
+#include "./gps.h"
+#include "./matrix.h"
 
 typedef struct{
     PyObject_HEAD

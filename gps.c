@@ -2,7 +2,7 @@
 
 #include <assert.h>
 #include <math.h>
-#include "gps.h"
+#include "./gps.h"
 
 static const double PI = 3.14159265;
 static const double EARTH_RADIUS_IN_MILES = 3963.1676;
@@ -23,7 +23,7 @@ KalmanFilter alloc_filter_velocity2d(double noise) {
   double v2p = 0.001;
   set_identity_matrix(f.state_transition);
   set_seconds_per_timestep(f, 1.0);
-	     
+
   /* We observe (x, y) in each time step */
   set_matrix(f.observation_model,
 	     1.0, 0.0, 0.0, 0.0,
@@ -120,7 +120,7 @@ double get_bearing(KalmanFilter f) {
   lon *= to_radians;
   delta_lat *= to_radians;
   delta_lon *= to_radians;
-  
+
   /* Do math */
   double lat1 = lat - delta_lat;
   y = sin(delta_lon) * cos(lat);
@@ -135,7 +135,7 @@ double get_bearing(KalmanFilter f) {
   while (bearing < 0.0) {
     bearing += 360.0;
   }
-    
+
   return bearing;
 }
 
@@ -144,7 +144,7 @@ double calculate_mph(double lat, double lon,
   /* First, let's calculate a unit-independent measurement - the radii
      of the earth traveled in each second. (Presumably this will be
      a very small number.) */
-  
+
   /* Convert to radians */
   double to_radians = PI / 180.0;
   lat *= to_radians;
@@ -160,7 +160,7 @@ double calculate_mph(double lat, double lon,
     * sin_half_dlon * sin_half_dlon;
   double radians_per_second = 2 * atan2(1000.0 * sqrt(a),
 					1000.0 * sqrt(1.0 - a));
-  
+
   /* Convert units */
   double miles_per_second = radians_per_second * EARTH_RADIUS_IN_MILES;
   double miles_per_hour = miles_per_second * 60.0 * 60.0;
