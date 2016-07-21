@@ -26,10 +26,10 @@ static void py_free_filter(PyKalmanFilter *self, PyObject *args) {
 
 static PyObject *py_update_velocity2d(PyKalmanFilter *self, PyObject *args) {
     double lat, lon, seconds_since_last_update;
-    
+
     if (!PyArg_ParseTuple(args, "ddd", &lat, &lon, &seconds_since_last_update))
         return NULL;
-        
+
     update_velocity2d(self->filter, lat, lon, seconds_since_last_update);
 
     Py_INCREF(Py_None);
@@ -131,12 +131,12 @@ static PyTypeObject filterType={
 #ifndef PyMODINIT_FUNC
 #define PyMODINIT_FUNC void
 #endif
-PyMODINIT_FUNC initpy_kalman(void) {
+PyMODINIT_FUNC initikalman(void) {
     PyObject *m;
     if (PyType_Ready(&filterType) < 0)
         return;
 
-    m = Py_InitModule3("py_kalman", NULL, "");
+    m = Py_InitModule3("ikalman", NULL, "");
     if (m == NULL)
         return;
 
