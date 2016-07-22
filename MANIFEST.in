@@ -1,9 +1,0 @@
-include README
-include setup.py
-include gps.h
-include gps.c
-include kalman.h
-include kalman.c
-include matrix.h
-include matrix.c
-include python_bindings.c
