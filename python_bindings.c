@@ -39,8 +39,9 @@ static PyObject *py_update_velocity2d(PyKalmanFilter *self, PyObject *args) {
 static PyObject *py_get_lat_long(PyKalmanFilter *self, PyObject *args){
 
     double lat, lon;
+	PyObject *result;
     get_lat_long(self->filter, &lat, &lon);
-    PyObject *result = Py_BuildValue("dd", lat, lon);
+    result = Py_BuildValue("dd", lat, lon);
 
     return result;
 }
@@ -50,8 +51,9 @@ static PyObject *py_get_lat_long(PyKalmanFilter *self, PyObject *args){
 static PyObject *py_get_velocity(PyKalmanFilter *self, PyObject *args){
 
     double delta_lat, delta_lon;
+	PyObject *result;
     get_velocity(self->filter, &delta_lat, &delta_lon);
-    PyObject *result = Py_BuildValue("dd", delta_lat, delta_lon);
+    result = Py_BuildValue("dd", delta_lat, delta_lon);
 
     return result;
 }
@@ -61,8 +63,9 @@ static PyObject *py_get_velocity(PyKalmanFilter *self, PyObject *args){
 static PyObject *py_get_bearing(PyKalmanFilter *self, PyObject *args){
 
     double bearing;
+	PyObject *result;
     bearing = get_bearing(self->filter);
-    PyObject *result = Py_BuildValue("d", bearing);
+    result = Py_BuildValue("d", bearing);
 
     return result;
 }
@@ -71,8 +74,9 @@ static PyObject *py_get_bearing(PyKalmanFilter *self, PyObject *args){
 static PyObject *py_get_mph(PyKalmanFilter *self, PyObject *args){
 
     double mph;
+	PyObject *result;
     mph = get_mph(self->filter);
-    PyObject *result = Py_BuildValue("d", mph);
+    result = Py_BuildValue("d", mph);
 
     return result;
 }
