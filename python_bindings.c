@@ -3,6 +3,33 @@
 #include "./gps.h"
 #include "./matrix.h"
 
+#ifndef PyVarObject_HEAD_INIT
+    #define PyVarObject_HEAD_INIT(type, size) \
+        PyObject_HEAD_INIT(type) size,
+#endif
+
+#ifndef Py_TYPE
+    #define Py_TYPE(ob) (((PyObject*)(ob))->ob_type)
+#endif
+
+
+#if PY_MAJOR_VERSION >= 3
+  #define MOD_ERROR_VAL NULL
+  #define MOD_SUCCESS_VAL(val) val
+  #define MOD_INIT(name) PyMODINIT_FUNC PyInit_##name(void)
+  #define MOD_DEF(ob, name, doc, methods) \
+          static struct PyModuleDef moduledef = { \
+            PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
+          ob = PyModule_Create(&moduledef);
+#else
+  #define MOD_ERROR_VAL
+  #define MOD_SUCCESS_VAL(val)
+  #define MOD_INIT(name) void init##name(void)
+  #define MOD_DEF(ob, name, doc, methods) \
+          ob = Py_InitModule3(name, methods, doc);
+#endif
+
+
 typedef struct{
     PyObject_HEAD
     KalmanFilter filter;
@@ -90,9 +117,10 @@ static PyMethodDef filter_methods[] = {
     { NULL, NULL },
 };
 
+
+
 static PyTypeObject filterType={
-    PyObject_HEAD_INIT(NULL)
-    0,                         /*ob_size*/
+    PyVarObject_HEAD_INIT(NULL, 0)
     "PyKalmanFilter",        /*tp_name*/
     sizeof(PyKalmanFilter),       /*tp_basicsize*/
     0,                         /*tp_itemsize*/
@@ -132,18 +160,22 @@ static PyTypeObject filterType={
     PyType_GenericNew,        /* tp_new */
 };
 
-#ifndef PyMODINIT_FUNC
-#define PyMODINIT_FUNC void
-#endif
-PyMODINIT_FUNC initikalman(void) {
-    PyObject *m;
-    if (PyType_Ready(&filterType) < 0)
-        return;
 
-    m = Py_InitModule3("ikalman", NULL, "");
+MOD_INIT(ikalman)
+{
+    PyObject *m;
+
+    if (PyType_Ready(&filterType) < 0)
+	return MOD_ERROR_VAL;
+    
+    MOD_DEF(m, "ikalman", "", NULL)
+
     if (m == NULL)
-        return;
+        return MOD_ERROR_VAL;
+
 
     Py_INCREF(&filterType);
     PyModule_AddObject(m, "filter", (PyObject *)&filterType);
+
+    return MOD_SUCCESS_VAL(m);
 }
